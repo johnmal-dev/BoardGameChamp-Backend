@@ -17,3 +17,13 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// get users
+Route::get('/users', function () {
+    return App\Models\User::all();
+});
+
+// get all plays
+Route::get('/plays', function () {
+    return App\Models\Play::all();
+});

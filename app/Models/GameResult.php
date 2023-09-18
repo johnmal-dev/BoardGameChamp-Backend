@@ -8,6 +8,4 @@ use Illuminate\Database\Eloquent\Model;
 class GameResult extends Model
 {
     use HasFactory;
-
-    protected $guarded = [];
 }
