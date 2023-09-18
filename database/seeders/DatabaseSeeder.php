@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Game;
 use App\Models\GameResult;
 use App\Models\Player;
 use App\Models\User;
@@ -57,8 +58,20 @@ class DatabaseSeeder extends Seeder
             'email' => 'augy@mail.com',
         ]);
 
-        $game = GameResult::factory()->create([
+        $game = Game::factory()->create([
+            'game_name' => 'Machi Koro 2',
+            'game_description' => 'A city building game',
+            'game_image' => 'https://cf.geekdo-images.com/medium/img/8Z3Z5Z2Z5Z5Z5Z5Z5Z5Z5Z5Z5=/fit-in/500x500/filters:no_upscale():strip_icc()/pic2437871.jpg',
+            'game_url' => 'https://boardgamegeek.com/boardgame/205583/machi-koro-bright-lights-big-city',
+            'game_min_players' => 2,
+            'game_max_players' => 5,
+            'game_min_playtime' => 30,
+            'game_max_playtime' => 45,
+        ]);
+
+        $gameResult = GameResult::factory()->create([
             'date' => '2021-09-18',
+            'game_id' => $game->id,
         ]);
 
         $player1 = Player::factory()->create([

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->date('date');
+            $table->foreignId('game_id')->constrained();
         });
     }
 
