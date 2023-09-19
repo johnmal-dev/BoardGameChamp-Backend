@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use App\Models\Game;
 use App\Models\GameResult;
 use App\Models\Player;
+use App\Models\PlayResult;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -69,26 +70,26 @@ class DatabaseSeeder extends Seeder
             'game_max_playtime' => 45,
         ]);
 
-        $gameResult = GameResult::factory()->create([
+        $gameResult = PlayResult::factory()->create([
             'date' => '2021-09-18',
             'game_id' => $game->id,
         ]);
 
         $player1 = Player::factory()->create([
             'user_id' => $jc->id,
-            'game_result_id' => $game->id,
+            'play_result_id' => $game->id,
             'rank' => 1,
         ]);
 
         $player2 = Player::factory()->create([
             'user_id' => $keno->id,
-            'game_result_id' => $game->id,
+            'play_result_id' => $game->id,
             'rank' => 2,
         ]);
 
         $player3 = Player::factory()->create([
             'user_id' => $jeremy->id,
-            'game_result_id' => $game->id,
+            'play_result_id' => $game->id,
             'rank' => 3,
         ]);
     }
