@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -10,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('play_results', function (Blueprint $table) {
+        Schema::create('game_results', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->date('date');
             $table->foreignId('game_id')->constrained();
+            $table->dateTime('game_date');
         });
     }
 
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('play_results');
+        Schema::dropIfExists('game_results');
     }
 };
