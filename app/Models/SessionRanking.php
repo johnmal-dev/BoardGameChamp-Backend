@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SessionRanking extends Model
 {
@@ -14,4 +15,14 @@ class SessionRanking extends Model
         'game_id',
         'session_rank',
     ];
+
+    public function sessionPlayer(): BelongsTo
+    {
+        return $this->belongsTo(SessionPlayer::class);
+    }
+
+    public function game(): BelongsTo
+    {
+        return $this->belongsTo(Game::class);
+    }
 }
