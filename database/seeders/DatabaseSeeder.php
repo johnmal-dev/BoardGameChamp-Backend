@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Game;
+use App\Models\GameMatch;
 use App\Models\GameResult;
 use App\Models\Player;
 use App\Models\PlayResult;
@@ -70,27 +71,32 @@ class DatabaseSeeder extends Seeder
             'game_max_playtime' => 45,
         ]);
 
-        $gameResult = GameResult::factory()->create([
-            'game_date' => '2021-09-18',
+//        $gameResult = GameResult::factory()->create([
+//            'game_date' => '2021-09-18',
+//            'game_id' => $game->id,
+//        ]);
+
+        $gameMatch = GameMatch::factory()->create([
+            'game_match_date' => '2021-10-04',
             'game_id' => $game->id,
         ]);
 
-        $player1 = Player::factory()->create([
-            'user_id' => $jc->id,
-            'game_result_id' => $game->id,
-            'rank' => 1,
-        ]);
-
-        $player2 = Player::factory()->create([
-            'user_id' => $keno->id,
-            'game_result_id' => $game->id,
-            'rank' => 2,
-        ]);
-
-        $player3 = Player::factory()->create([
-            'user_id' => $jeremy->id,
-            'game_result_id' => $game->id,
-            'rank' => 3,
-        ]);
+//        $player1 = Player::factory()->create([
+//            'user_id' => $jc->id,
+//            'game_result_id' => $game->id,
+//            'rank' => 1,
+//        ]);
+//
+//        $player2 = Player::factory()->create([
+//            'user_id' => $keno->id,
+//            'game_result_id' => $game->id,
+//            'rank' => 2,
+//        ]);
+//
+//        $player3 = Player::factory()->create([
+//            'user_id' => $jeremy->id,
+//            'game_result_id' => $game->id,
+//            'rank' => 3,
+//        ]);
     }
 }
