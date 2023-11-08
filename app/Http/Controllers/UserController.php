@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    //store new user
     public function index()
     {
         return User::query()->orderBy('username')->get();
@@ -23,9 +22,14 @@ class UserController extends Controller
         return $user;
     }
 
+    public function show($id)
+    {
+        return User::query()->find($id);
+    }
+
     public function update(Request $request, $id)
     {
-        $user = User::find($id);
+        $user = User::query()->find($id);
         $user->first_name = $request->input('first_name');
         $user->last_name = $request->input('last_name');
         $user->save();
@@ -34,7 +38,12 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::find($id);
+        $user = User::query()->find($id);
+
+        if (!$user) {
+            return null;
+        }
+
         $user->delete();
         return $user;
     }
