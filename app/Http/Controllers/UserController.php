@@ -14,6 +14,21 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        $missingInput = empty($request->input('username')) || empty($request->input('email')) || empty($request->input('password'));
+        if ($missingInput) {
+            return response()->json(['error' => 'Username, email and password are required'], 400);
+        }
+
+        $existingUsername = User::query()->where('username', $request->input('username'))->first();
+        if ($existingUsername) {
+            return response()->json(['error' => 'User already exists'], 400);
+        }
+
+        $existingEmail = User::query()->where('email', $request->input('email'))->first();
+        if ($existingEmail) {
+            return response()->json(['error' => 'Email already exists'], 400);
+        }
+
         $user = new User;
         $user->username = $request->input('username');
         $user->email = $request->input('email');
@@ -24,15 +39,24 @@ class UserController extends Controller
 
     public function show($id)
     {
-        return User::query()->find($id);
+        $userFound = User::query()->find($id);
+        if (!$userFound) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        return $userFound;
     }
 
     public function update(Request $request, $id)
     {
         $user = User::query()->find($id);
-        $user->first_name = $request->input('first_name');
-        $user->last_name = $request->input('last_name');
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $user->fill($request->all());
         $user->save();
+
         return $user;
     }
 
@@ -45,6 +69,6 @@ class UserController extends Controller
         }
 
         $user->delete();
-        return $user;
+        return response()->json(['success' => 'User deleted'], 200);
     }
 }
