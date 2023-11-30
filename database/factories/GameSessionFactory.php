@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Game;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -9,8 +10,11 @@ class GameSessionFactory extends Factory
 {
     public function definition(): array
     {
+        $game_id = Game::factory()->create()->id;
+
         return [
-            'game_date' => Carbon::now(),
+            'game_date' => now(),
+            'game_id' => $game_id
         ];
     }
 }

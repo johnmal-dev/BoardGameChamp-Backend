@@ -9,15 +9,7 @@ class GameSessionController extends Controller
 {
     public function index()
     {
-        return GameSession::query()->orderBy('game_date')->get();
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return GameSession::query()->orderBy('game_date', 'desc')->get();
     }
 
     /**
@@ -25,7 +17,12 @@ class GameSessionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return GameSession::create([
+            'game_date' => $request->input('game_date'),
+            'game_id' => $request->input('game_id'),
+        ])
+            ->fresh()
+            ->load('game');
     }
 
     /**

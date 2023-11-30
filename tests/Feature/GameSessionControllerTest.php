@@ -15,34 +15,45 @@ class GameSessionControllerTest extends TestCase
     /** @test */
     public function it_can_get_all_game_sessions_sorted_by_game_date(): void
     {
-        $game = Game::factory()->create();
-
-        $gameSessions = GameSession::factory()->count(3)->create();
+        $gameSessions = GameSession::factory()
+            ->count(3)
+            ->sequence(
+                ['game_date' => now()->subDay(2)->toDateTimeString()],
+                ['game_date' => now()->subDay(1)->toDateTimeString()],
+                ['game_date' => now()->toDateTimeString()]
+            )
+            ->create();
 
         $response = $this->get('/api/game-sessions');
-
-        $expectedData = $gameSessions->sortBy('game_date')->values()->toArray();
+        $expectedData = $gameSessions
+            ->sortBy('game_date', null, true)
+            ->values()
+            ->toArray();
 
         $response
             ->assertStatus(200)
             ->assertJson($expectedData);
     }
 
-//    /** @test */
-//    public function it_can_create_a_game_session(): void
-//    {
-//        $gameSessionData = [
-//            'game_id' => 1,
-//            'game_date' => '2021-01-01',
-//        ];
-//
-//        $response = $this->post('/api/game-sessions', $gameSessionData);
-//
-//        $response
-//            ->assertStatus(201);
-//
-//        $this->assertDatabaseHas('game_sessions', $gameSessionData);
-//    }
+    /** @test */
+    public function it_can_create_a_game_session(): void
+    {
+        $gameSessionData = [
+            'game_id' => Game::factory()->create()->id,
+            'game_date' => now()->toDateString()
+        ];
+
+        $this->post('/api/game-sessions', $gameSessionData)
+            ->assertStatus(200)
+            ->assertJson(
+                GameSession::query()
+                    ->with('game')
+                    ->first()
+                    ->toArray()
+            );
+
+        $this->assertDatabaseHas('game_sessions', $gameSessionData);
+    }
 //
 //    /** @test */
 //    public function it_returns_an_error_if_required_input_is_missing(): void
