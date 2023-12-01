@@ -24,7 +24,7 @@ class GameSessionControllerTest extends TestCase
             )
             ->create();
 
-        $response = $this->get('/api/game-sessions');
+        $response     = $this->get('/api/game-sessions');
         $expectedData = $gameSessions
             ->sortBy('game_date', null, true)
             ->values()
@@ -39,12 +39,12 @@ class GameSessionControllerTest extends TestCase
     public function it_can_create_a_game_session(): void
     {
         $gameSessionData = [
-            'game_id' => Game::factory()->create()->id,
-            'game_date' => now()->toDateString()
+            'game_id'   => Game::factory()->create()->id,
+            'game_date' => now()->toDateString(),
         ];
 
         $this->post('/api/game-sessions', $gameSessionData)
-            ->assertStatus(200)
+            ->assertStatus(201)
             ->assertJson(
                 GameSession::query()
                     ->with('game')
@@ -54,13 +54,33 @@ class GameSessionControllerTest extends TestCase
 
         $this->assertDatabaseHas('game_sessions', $gameSessionData);
     }
-//
-//    /** @test */
-//    public function it_returns_an_error_if_required_input_is_missing(): void
-//    {
-//        $response = $this->post('/api/game-sessions', ['game_id' => 1]);
-//
-//        $response->assertStatus(400)
-//            ->assertJson(['error' => 'Game ID and game date are required']);
-//    }
+
+    /** @test */
+    public function it_returns_an_error_if_required_input_is_missing(): void
+    {
+        $response = $this->post('/api/game-sessions', ['game_id' => 1]);
+
+        $response->assertStatus(400)
+            ->assertJson(['error' => 'Game ID and game date are required']);
+    }
+
+    /** @test */
+    public function it_can_get_a_game_session_by_id(): void
+    {
+        $gameSession = GameSession::factory()->create();
+
+        $response = $this->get("/api/game-sessions/{$gameSession->id}");
+
+        $response->assertStatus(200)
+            ->assertJson($gameSession->toArray());
+    }
+
+    /** @test */
+    public function it_fails_if_the_game_session_does_not_exist(): void
+    {
+        $response = $this->get('/api/game-sessions/1000');
+
+        $response->assertStatus(404)
+            ->assertJson(['error' => 'Game session not found']);
+    }
 }
