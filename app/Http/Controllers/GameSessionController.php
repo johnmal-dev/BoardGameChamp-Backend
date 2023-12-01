@@ -17,12 +17,18 @@ class GameSessionController extends Controller
      */
     public function store(Request $request)
     {
-        return GameSession::create([
+        if (!$request->has(['game_id', 'game_date'])) {
+            return response()->json(['error' => 'Game ID and game date are required'], 400);
+        }
+
+        $gameSession = GameSession::create([
             'game_date' => $request->input('game_date'),
             'game_id' => $request->input('game_id'),
         ])
             ->fresh()
             ->load('game');
+
+        return response()->json($gameSession, 201);
     }
 
     /**
@@ -30,7 +36,11 @@ class GameSessionController extends Controller
      */
     public function show(string $id)
     {
-        //
+        if (GameSession::query()->where('id', $id)->doesntExist()) {
+            return response()->json(['error' => 'Game session not found'], 404);
+        }
+
+        return GameSession::query()->with('game')->find($id);
     }
 
     /**
