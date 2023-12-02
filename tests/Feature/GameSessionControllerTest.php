@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Game;
 use App\Models\GameSession;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -82,5 +81,36 @@ class GameSessionControllerTest extends TestCase
 
         $response->assertStatus(404)
             ->assertJson(['error' => 'Game session not found']);
+    }
+
+    /** @test */
+    public function it_can_update_a_game_session(): void
+    {
+        $gameSession = GameSession::factory()->create();
+
+        $response = $this->put("/api/game-sessions/{$gameSession->id}", [
+            'game_id'   => Game::factory()->create()->id,
+            'game_date' => now()->subDay()->toDateTimeString(),
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson(
+                GameSession::query()
+                    ->with('game')
+                    ->first()
+                    ->toArray()
+            );
+    }
+
+    /** @test */
+    public function it_can_delete_a_game_session(): void
+    {
+        $gameSession = GameSession::factory()->create();
+
+        $response = $this->delete("/api/game-sessions/{$gameSession->id}");
+
+        $response->assertStatus(204);
+
+        $this->assertDatabaseMissing('game_sessions', ['id' => $gameSession->id]);
     }
 }

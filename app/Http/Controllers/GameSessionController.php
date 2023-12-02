@@ -3,25 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\GameSession;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class GameSessionController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
-        return GameSession::query()->orderBy('game_date', 'desc')->get();
+        $gameSessions = GameSession::query()->orderBy('game_date', 'desc')->get();
+        return response()->json($gameSessions, 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         if (!$request->has(['game_id', 'game_date'])) {
             return response()->json(['error' => 'Game ID and game date are required'], 400);
         }
 
-        $gameSession = GameSession::create([
+        $gameSession = GameSession::query()->create([
             'game_date' => $request->input('game_date'),
             'game_id' => $request->input('game_id'),
         ])
@@ -31,39 +30,35 @@ class GameSessionController extends Controller
         return response()->json($gameSession, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         if (GameSession::query()->where('id', $id)->doesntExist()) {
             return response()->json(['error' => 'Game session not found'], 404);
         }
 
-        return GameSession::query()->with('game')->find($id);
+        $gameSession = GameSession::query()->with('game')->find($id);
+
+        return response()->json($gameSession, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, string $id): JsonResponse
     {
-        //
+        $gameSession = GameSession::query()->find($id);
+
+        $gameSession->update([
+            'game_date' => $request->input('game_date'),
+            'game_id' => $request->input('game_id'),
+        ]);
+
+        $gameSession->load('game');
+
+        return response()->json($gameSession, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(string $id): JsonResponse
     {
-        //
-    }
+        GameSession::query()->find($id)->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json(null, 204);
     }
 }
