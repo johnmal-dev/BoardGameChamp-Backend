@@ -9,7 +9,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        return User::query()->orderBy('username')->get();
+        return response()->json(User::query()->orderBy('username')->get());
     }
 
     public function store(Request $request)
