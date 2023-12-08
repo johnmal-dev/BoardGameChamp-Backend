@@ -11,15 +11,6 @@ class Game extends Model
 {
     use HasFactory;
 
-    public string $game_name;
-    public string $game_description;
-    public string $game_image;
-    public string $game_url;
-    public int $game_min_players;
-    public int $game_max_players;
-    public int $game_min_playtime;
-    public int $game_max_playtime;
-
     protected $fillable = [
         'game_name',
         'game_description',

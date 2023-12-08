@@ -14,17 +14,16 @@ class GameController extends Controller
 
     public function store(Request $request)
     {
-        $game = new Game;
-        $game->game_name = $request->input('game_name');
-        $game->game_description = $request->input('game_description');
-        $game->game_image = $request->input('game_image');
-        $game->game_url = $request->input('game_url');
-        $game->game_min_players = $request->input('game_min_players');
-        $game->game_max_players = $request->input('game_max_players');
-        $game->game_min_playtime = $request->input('game_min_playtime');
-        $game->game_max_playtime = $request->input('game_max_playtime');
-        $game->save();
-        return $game;
+        return Game::query()->create([
+            'game_name' => $request->input('game_name'),
+            'game_description' => $request->input('game_description') ?? null,
+            'game_image' => $request->input('game_image') ?? null,
+            'game_url' => $request->input('game_url') ?? null,
+            'game_min_players' => $request->input('game_min_players') ?? null,
+            'game_max_players' => $request->input('game_max_players') ?? null,
+            'game_min_playtime' => $request->input('game_min_playtime') ?? null,
+            'game_max_playtime' => $request->input('game_max_playtime') ?? null,
+        ]);
     }
 
     public function show(string $id)

@@ -14,13 +14,13 @@ return new class extends Migration {
             $table->id();
             $table->timestamps();
             $table->string('game_name');
-            $table->string('game_description');
-            $table->string('game_image');
-            $table->string('game_url');
-            $table->integer('game_min_players');
-            $table->integer('game_max_players');
-            $table->integer('game_min_playtime');
-            $table->integer('game_max_playtime');
+            $table->string('game_description')->nullable();
+            $table->string('game_image')->nullable();
+            $table->string('game_url')->nullable();
+            $table->integer('game_min_players')->nullable();
+            $table->integer('game_max_players')->nullable();
+            $table->integer('game_min_playtime')->nullable();
+            $table->integer('game_max_playtime')->nullable();
         });
     }
 
