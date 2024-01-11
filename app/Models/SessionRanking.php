@@ -10,11 +10,7 @@ class SessionRanking extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'session_player_id',
-        'game_id',
-        'session_rank',
-    ];
+    protected $guarded = [];
 
     public function sessionPlayer(): BelongsTo
     {

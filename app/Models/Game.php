@@ -20,16 +20,7 @@ class Game extends Model
     public int $game_min_playtime;
     public int $game_max_playtime;
 
-    protected $fillable = [
-        'game_name',
-        'game_description',
-        'game_image',
-        'game_url',
-        'game_min_players',
-        'game_max_players',
-        'game_min_playtime',
-        'game_max_playtime',
-    ];
+    protected $guarded = [];
 
     public static array $rules = [
         'game_name' => 'required|string',

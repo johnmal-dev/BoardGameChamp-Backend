@@ -11,11 +11,7 @@ class SessionPlayer extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'game_id',
-        'game_session_id'
-    ];
+    protected $guarded = [];
 
     public function user(): BelongsTo
     {
