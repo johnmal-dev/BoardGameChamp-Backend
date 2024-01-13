@@ -78,36 +78,21 @@ class DatabaseSeeder extends Seeder
             'user_id' => $jc->id,
             'game_id' => $game->id,
             'game_session_id' => $gameSession->id,
-        ]);
-
-        $sessionRankPlayer1 = SessionRanking::factory()->create([
-            'session_player_id' => $sessionPlayer1->id,
-            'game_id' => $game->id,
-            'session_rank' => 1,
+            'ranking' => 1,
         ]);
 
         $sessionPlayer2 = SessionPlayer::factory()->create([
             'user_id' => $keno->id,
             'game_id' => $game->id,
             'game_session_id' => $gameSession->id,
-        ]);
-
-        $sessionRankPlayer2 = SessionRanking::factory()->create([
-            'session_player_id' => $sessionPlayer2->id,
-            'game_id' => $game->id,
-            'session_rank' => 2,
+            'ranking' => 2,
         ]);
 
         $sessionPlayer3 = SessionPlayer::factory()->create([
             'user_id' => $jeremy->id,
             'game_id' => $game->id,
             'game_session_id' => $gameSession->id,
-        ]);
-
-        $sessionRankPlayer3 = SessionRanking::factory()->create([
-            'session_player_id' => $sessionPlayer3->id,
-            'game_id' => $game->id,
-            'session_rank' => 3,
+            'ranking' => 3,
         ]);
     }
 }

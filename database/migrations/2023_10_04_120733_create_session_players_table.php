@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('game_id')->constrained();
             $table->foreignId('game_session_id')->constrained();
+            $table->integer('ranking')->default(1);
             $table->timestamps();
         });
     }

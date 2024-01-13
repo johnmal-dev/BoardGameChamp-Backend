@@ -50,11 +50,6 @@ class Game extends Model
         return $this->hasMany(GameSession::class);
     }
 
-    public function sessionRankings(): HasMany
-    {
-        return $this->hasMany(SessionRanking::class);
-    }
-
     protected static function booted(): void
     {
         static::creating(function ($game) {

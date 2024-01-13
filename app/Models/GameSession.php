@@ -20,6 +20,6 @@ class GameSession extends Model
 
     public function sessionPlayers(): HasMany
     {
-        return $this->hasMany(SessionPlayer::class)->with('user', 'sessionRanking');
+        return $this->hasMany(SessionPlayer::class)->with('user');
     }
 }
