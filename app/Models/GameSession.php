@@ -17,4 +17,9 @@ class GameSession extends Model
     {
         return $this->belongsTo(Game::class);
     }
+
+    public function sessionPlayers(): HasMany
+    {
+        return $this->hasMany(SessionPlayer::class)->with('user', 'sessionRanking');
+    }
 }
