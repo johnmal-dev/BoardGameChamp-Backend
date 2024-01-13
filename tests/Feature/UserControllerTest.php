@@ -53,5 +53,28 @@ class UserControllerTest extends TestCase
             ->assertJson(['error' => 'Username, email and password are required']);
     }
 
-    // Add more tests for other methods (show, update, destroy) as needed.
+    /** @test */
+    public function it_can_update_a_username()
+    {
+        $user = User::factory()->create([
+            'username' => 'oldusername',
+        ]);
+
+        $this->assertDatabaseHas('users', ['id' => $user->id, 'username' => 'oldusername']);
+        $response = $this->patch("/api/users/{$user->id}", ['username' => 'newusername']);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('users', ['id' => $user->id, 'username' => 'newusername']);
+    }
+
+    /** @test */
+    public function it_can_delete_a_user()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->delete("/api/users/{$user->id}");
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
+    }
 }
