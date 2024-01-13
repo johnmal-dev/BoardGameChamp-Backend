@@ -3,61 +3,64 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
-        return Game::query()->orderBy('game_name')->get();
+        $games = Game::query()->orderBy('game_name')->get();
+        return response()->json($games);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        $game = new Game;
-        $game->game_name = $request->input('game_name');
-        $game->game_description = $request->input('game_description');
-        $game->game_image = $request->input('game_image');
-        $game->game_url = $request->input('game_url');
-        $game->game_min_players = $request->input('game_min_players');
-        $game->game_max_players = $request->input('game_max_players');
-        $game->game_min_playtime = $request->input('game_min_playtime');
-        $game->game_max_playtime = $request->input('game_max_playtime');
-        $game->save();
-        return $game;
+        try {
+            $game = Game::query()->create([
+                'game_name' => $request->input('game_name'),
+                'game_description' => $request->input('game_description'),
+                'game_image' => $request->input('game_image'),
+                'game_url' => $request->input('game_url'),
+                'game_min_players' => $request->input('game_min_players'),
+                'game_max_players' => $request->input('game_max_players'),
+                'game_min_playtime' => $request->input('game_min_playtime'),
+                'game_max_playtime' => $request->input('game_max_playtime'),
+            ]);
+            return response()->json($game, 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
-        $gameFound = Game::query()->find($id);
-        if (!$gameFound) {
+        if (!$gameFound = Game::query()->find($id)) {
             return response()->json(['error' => 'Game not found'], 404);
         }
 
-        return $gameFound;
+        return response()->json($gameFound);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): JsonResponse
     {
-        $game = Game::query()->find($id);
-        if (!$game) {
+        if (!$game = Game::query()->find($id)) {
             return response()->json(['error' => 'Game not found'], 404);
         }
 
         $game->fill($request->all());
         $game->save();
 
-        return $game;
+        return response()->json($game);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
-        $game = Game::query()->find($id);
-        if (!$game) {
+        if (!$game = Game::query()->find($id)) {
             return response()->json(['error' => 'Game not found'], 404);
         }
 
         $game->delete();
-        return response()->json(['success' => 'Game deleted'], 200);
+        return response()->json(['success' => 'Game deleted']);
     }
 }

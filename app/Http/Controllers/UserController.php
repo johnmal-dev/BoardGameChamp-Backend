@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
         return response()->json(User::query()->orderBy('username')->get());
     }
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $missingInput = empty($request->input('username')) || empty($request->input('email')) || empty($request->input('password'));
         if ($missingInput) {
@@ -29,46 +30,43 @@ class UserController extends Controller
             return response()->json(['error' => 'Email already exists'], 400);
         }
 
-        $user = new User;
-        $user->username = $request->input('username');
-        $user->email = $request->input('email');
-        $user->password = $request->input('password');
-        $user->save();
-        return $user;
+        $user = User::query()->create([
+            'username' => $request->input('username'),
+            'email' => $request->input('email'),
+            'password' => $request->input('password')
+        ]);
+
+        return response()->json($user, 201);
     }
 
-    public function show($id)
+    public function show($id): JsonResponse
     {
-        $userFound = User::query()->find($id);
-        if (!$userFound) {
+        if (!$userFound = User::query()->find($id)) {
             return response()->json(['error' => 'User not found'], 404);
         }
-        return $userFound;
+        return response()->json($userFound);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): JsonResponse
+    {
+        if (!$user = User::query()->find($id)) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $user->fill($request->all())->save();
+
+        return response()->json($user);
+    }
+
+    public function destroy($id): JsonResponse
     {
         $user = User::query()->find($id);
 
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
-        }
-
-        $user->fill($request->all());
-        $user->save();
-
-        return $user;
-    }
-
-    public function destroy($id)
-    {
-        $user = User::query()->find($id);
-
-        if (!$user) {
-            return null;
         }
 
         $user->delete();
-        return response()->json(['success' => 'User deleted'], 200);
+        return response()->json(['success' => 'User deleted']);
     }
 }

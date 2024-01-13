@@ -10,7 +10,7 @@ class GameSessionController extends Controller
 {
     public function index(): JsonResponse
     {
-        $gameSessions = GameSession::query()->orderBy('game_date', 'desc')->get();
+        $gameSessions = GameSession::query()->with('sessionPlayers')->orderBy('game_date', 'desc')->get();
         return response()->json($gameSessions, 200);
     }
 
