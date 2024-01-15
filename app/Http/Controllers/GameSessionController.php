@@ -16,18 +16,23 @@ class GameSessionController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        if (!$request->has(['game_id', 'game_date'])) {
-            return response()->json(['error' => 'Game ID and game date are required'], 400);
+        try {
+            if (!$request->has(['game_id', 'game_date'])) {
+                return response()->json(['error' => 'Game ID and game date are required'], 400);
+            }
+
+            $gameSession = GameSession::query()->create([
+                'game_date' => $request->input('game_date'),
+                'game_id' => $request->input('game_id'),
+            ])
+                ->fresh()
+                ->load('game');
+
+            return response()->json($gameSession, 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
         }
 
-        $gameSession = GameSession::query()->create([
-            'game_date' => $request->input('game_date'),
-            'game_id' => $request->input('game_id'),
-        ])
-            ->fresh()
-            ->load('game');
-
-        return response()->json($gameSession, 201);
     }
 
     public function show(string $id): JsonResponse

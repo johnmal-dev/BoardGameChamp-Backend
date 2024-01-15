@@ -25,6 +25,7 @@ class SessionPlayerTest extends TestCase
             'user_id' => $user->id,
             'game_session_id' => $gameSession->id,
             'game_id' => $game->id,
+            'ranking' => 4,
         ];
 
         $response = $this->post('/api/session-players', $sessionPlayerData);
