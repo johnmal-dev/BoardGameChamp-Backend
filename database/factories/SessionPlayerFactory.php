@@ -12,9 +12,9 @@ class SessionPlayerFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => 1,
-            'game_id' => 1,
-            'game_session_id' => 1,
+            'user_id' => User::factory()->create()->id,
+            'game_id' =>  Game::factory()->create()->id,
+            'game_session_id' => GameSession::factory()->create()->id,
             'ranking' => rand(1, 5),
         ];
     }

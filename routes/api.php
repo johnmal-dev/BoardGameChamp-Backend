@@ -12,3 +12,5 @@ Route::resources([
     'game-sessions' => GameSessionController::class,
     'session-players' => SessionPlayerController::class,
 ]);
+
+Route::post('/new-session', [GameSessionController::class, 'newSession']);

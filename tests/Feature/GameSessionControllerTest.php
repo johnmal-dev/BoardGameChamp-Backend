@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Game;
 use App\Models\GameSession;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -112,5 +113,34 @@ class GameSessionControllerTest extends TestCase
         $response->assertStatus(204);
 
         $this->assertDatabaseMissing('game_sessions', ['id' => $gameSession->id]);
+    }
+
+    /** @test */
+    public function deleting_a_game_session_cascade_deletes_any_connected_session_players(): void
+    {
+        $game = Game::factory()->create();
+        $gameSession = GameSession::factory()->create();
+        $gameSession->sessionPlayers()->createMany(
+            [
+                [
+                    'user_id' => $user1Id = User::factory()->create()->id,
+                    'game_id' => $game->id,
+                    'ranking' => 1,
+                ],
+                [
+                    'user_id' => $user2Id = User::factory()->create()->id,
+                    'game_id' => $game->id,
+                    'ranking' => 2,
+                ],
+            ]
+        );
+
+        $this->assertDatabaseHas('session_players', ['user_id' => $user1Id]);
+        $this->assertDatabaseHas('session_players', ['user_id' => $user2Id]);
+
+        $this->delete("/api/game-sessions/{$gameSession->id}");
+
+        $this->assertDatabaseMissing('session_players', ['user_id' => $user1Id]);
+        $this->assertDatabaseMissing('session_players', ['user_id' => $user2Id]);
     }
 }
