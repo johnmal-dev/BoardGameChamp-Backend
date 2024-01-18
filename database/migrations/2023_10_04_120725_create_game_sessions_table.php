@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('game_sessions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('game_id')->constrained();
-            $table->dateTime('game_date');
+            $table->dateTime('game_session_date');
             $table->timestamps();
         });
     }

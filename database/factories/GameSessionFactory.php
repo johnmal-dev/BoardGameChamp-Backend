@@ -11,7 +11,7 @@ class GameSessionFactory extends Factory
     public function definition(): array
     {
         return [
-            'game_date' => now(),
+            'game_session_date' => now(),
             'game_id' => Game::factory()->create()->id,
         ];
     }

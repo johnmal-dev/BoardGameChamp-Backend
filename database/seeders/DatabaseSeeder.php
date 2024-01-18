@@ -70,7 +70,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $gameSession = GameSession::factory()->create([
-            'game_date' => '2021-10-04',
+            'game_session_date' => '2021-10-04',
             'game_id' => $game->id,
         ]);
 

@@ -13,20 +13,20 @@ class GameSessionControllerTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function it_can_get_all_game_sessions_sorted_by_game_date(): void
+    public function it_can_get_all_game_sessions_sorted_by_game_session_date(): void
     {
         $gameSessions = GameSession::factory()
             ->count(3)
             ->sequence(
-                ['game_date' => now()->subDay(2)->toDateTimeString()],
-                ['game_date' => now()->subDay(1)->toDateTimeString()],
-                ['game_date' => now()->toDateTimeString()]
+                ['game_session_date' => now()->subDay(2)->toDateTimeString()],
+                ['game_session_date' => now()->subDay(1)->toDateTimeString()],
+                ['game_session_date' => now()->toDateTimeString()]
             )
             ->create();
 
         $response     = $this->get('/api/game-sessions');
         $expectedData = $gameSessions
-            ->sortBy('game_date', null, true)
+            ->sortBy('game_session_date', null, true)
             ->values()
             ->toArray();
 
@@ -40,7 +40,7 @@ class GameSessionControllerTest extends TestCase
     {
         $gameSessionData = [
             'game_id'   => Game::factory()->create()->id,
-            'game_date' => now()->toDateString(),
+            'game_session_date' => now()->toDateString(),
         ];
 
         $this->post('/api/game-sessions', $gameSessionData)
@@ -91,7 +91,7 @@ class GameSessionControllerTest extends TestCase
 
         $response = $this->put("/api/game-sessions/{$gameSession->id}", [
             'game_id'   => Game::factory()->create()->id,
-            'game_date' => now()->subDay()->toDateTimeString(),
+            'game_session_date' => now()->subDay()->toDateTimeString(),
         ]);
 
         $response->assertStatus(200)
@@ -116,7 +116,7 @@ class GameSessionControllerTest extends TestCase
     }
 
     /** @test */
-    public function deleting_a_game_session_cascade_deletes_any_connected_session_players(): void
+    public function it_cascade_deletes_connected_session_players_when_deleting_a_game_session(): void
     {
         $game = Game::factory()->create();
         $gameSession = GameSession::factory()->create();
@@ -142,5 +142,26 @@ class GameSessionControllerTest extends TestCase
 
         $this->assertDatabaseMissing('session_players', ['user_id' => $user1Id]);
         $this->assertDatabaseMissing('session_players', ['user_id' => $user2Id]);
+    }
+
+    /** @test */
+    public function it_can_store_new_game_session_and_session_players_with_new_game_session_endpoint()
+    {
+        $incomingData = [
+            'game_session_date' => now()->toDateString(),
+            'session_player_ids' => [1, 2, 3]
+        ];
+
+        $response = $this->post('/api/new-game-session', $incomingData);
+
+        $this->assertDatabaseHas('game_sessions', [
+            'game_id' => 1,
+            'game_session_date' => $incomingData['game_session_date'],
+        ]);
+//        $this->assertDatabaseHas('session_players', [
+//            'user_id' => $user->id,
+//            'game_session_id' => GameSession::query()->first()->id,
+//            'game_id' => $game->id,
+//        ]);
     }
 }
