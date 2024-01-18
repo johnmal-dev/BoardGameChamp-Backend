@@ -24,7 +24,7 @@ class GameSessionControllerTest extends TestCase
             )
             ->create();
 
-        $response     = $this->get('/api/game-sessions');
+        $response = $this->get('/api/game-sessions');
         $expectedData = $gameSessions
             ->sortBy('game_session_date', null, true)
             ->values()
@@ -39,7 +39,7 @@ class GameSessionControllerTest extends TestCase
     public function it_can_create_a_game_session(): void
     {
         $gameSessionData = [
-            'game_id'   => Game::factory()->create()->id,
+            'game_id' => Game::factory()->create()->id,
             'game_session_date' => now()->toDateString(),
         ];
 
@@ -90,7 +90,7 @@ class GameSessionControllerTest extends TestCase
         $gameSession = GameSession::factory()->create();
 
         $response = $this->put("/api/game-sessions/{$gameSession->id}", [
-            'game_id'   => Game::factory()->create()->id,
+            'game_id' => Game::factory()->create()->id,
             'game_session_date' => now()->subDay()->toDateTimeString(),
         ]);
 
@@ -147,21 +147,52 @@ class GameSessionControllerTest extends TestCase
     /** @test */
     public function it_can_store_new_game_session_and_session_players_with_new_game_session_endpoint()
     {
+        $gamePlayed = Game::factory()->create();
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+        $user3 = User::factory()->create();
+
         $incomingData = [
+            'game_id' => $gamePlayed->id,
             'game_session_date' => now()->toDateString(),
-            'session_player_ids' => [1, 2, 3]
+            'session_players' => [
+                [
+                    'user_id' => $user1->id,
+                    'ranking' => 1,
+                ],
+                [
+                    'user_id' => $user2->id,
+                    'ranking' => 2,
+                ],
+                [
+                    'user_id' => $user3->id,
+                    'ranking' => 3,
+                ],
+            ]
         ];
 
         $response = $this->post('/api/new-game-session', $incomingData);
 
+        $response->assertStatus(201)
+            ->assertJson(
+                GameSession::query()
+                    ->with('game')
+                    ->first()
+                    ->toArray()
+            );
+
         $this->assertDatabaseHas('game_sessions', [
-            'game_id' => 1,
+            'game_id' => $incomingData['game_id'],
             'game_session_date' => $incomingData['game_session_date'],
         ]);
-//        $this->assertDatabaseHas('session_players', [
-//            'user_id' => $user->id,
-//            'game_session_id' => GameSession::query()->first()->id,
-//            'game_id' => $game->id,
-//        ]);
+
+        $this->assertDatabaseHas('session_players', [
+            'user_id' => $incomingData['session_players'][0]['user_id'],
+            'game_id' => $incomingData['game_id'],
+            'ranking' => $incomingData['session_players'][0]['ranking'],
+            'game_session_id' => GameSession::query()->first()->id,
+        ]);
+
+        $this->assertDatabaseCount('session_players', count($incomingData['session_players']));
     }
 }

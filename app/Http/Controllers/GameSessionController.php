@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\GameSession;
+use App\Models\SessionPlayer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -68,8 +69,7 @@ class GameSessionController extends Controller
 
     public function newGameSession(Request $request): JsonResponse
     {
-        try {
-            if (!$request->has(['session_player_ids', 'game_session_date'])) {
+            if (!$request->has(['session_players', 'game_session_date', 'game_id'])) {
                 return response()->json(['error' => 'Missing info'], 400);
             }
 
@@ -80,9 +80,17 @@ class GameSessionController extends Controller
                 ->fresh()
                 ->load('game');
 
+            $sessionPlayers = $request->input('session_players');
+
+            foreach ($sessionPlayers as $sessionPlayer) {
+                SessionPlayer::query()->create([
+                    'user_id' => $sessionPlayer['user_id'],
+                    'game_session_id' => $gameSession->id,
+                    'game_id' => $gameSession->game_id,
+                    'ranking' => $sessionPlayer['ranking'],
+                ]);
+            }
+
             return response()->json($gameSession, 201);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
-        }
     }
 }
