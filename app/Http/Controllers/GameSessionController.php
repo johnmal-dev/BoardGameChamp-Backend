@@ -88,7 +88,9 @@ class GameSessionController extends Controller
                     'game_session_id' => $gameSession->id,
                     'game_id' => $gameSession->game_id,
                     'ranking' => $sessionPlayer['ranking'],
-                ]);
+                ])
+                    ->fresh()
+                    ->load(['user', 'gameSession']);
             }
 
             return response()->json($gameSession, 201);
