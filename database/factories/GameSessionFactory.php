@@ -12,7 +12,9 @@ class GameSessionFactory extends Factory
     {
         return [
             'game_session_date' => now(),
-            'game_id' => Game::factory()->create()->id,
+            'game_id' => function (array $attributes) {
+                return $attributes['game_id'] ?? Game::factory()->create()->id;
+            },
         ];
     }
 }
