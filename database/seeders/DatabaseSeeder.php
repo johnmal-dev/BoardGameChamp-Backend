@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Game;
 use App\Models\GameSession;
 use App\Models\SessionPlayer;
-use App\Models\SessionRanking;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
