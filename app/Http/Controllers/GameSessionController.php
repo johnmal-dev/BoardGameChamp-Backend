@@ -6,6 +6,7 @@ use App\Models\GameSession;
 use App\Models\SessionPlayer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class GameSessionController extends Controller
 {
@@ -92,6 +93,8 @@ class GameSessionController extends Controller
                     ->fresh()
                     ->load(['user', 'gameSession']);
             }
+
+            Log::info('New game session created', ['game_session_id' => $gameSession->id]);
 
             return response()->json($gameSession, 201);
     }
