@@ -44,6 +44,6 @@ class SessionPlayerTest extends TestCase
 
         $response
             ->assertStatus(400)
-            ->assertJson(['error' => 'Game session ID, game ID and user ID are required']);
+            ->assertJson(['error' => 'Game session ID, game ID, ranking and user ID are required']);
     }
 }

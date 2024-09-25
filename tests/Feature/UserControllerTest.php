@@ -77,4 +77,25 @@ class UserControllerTest extends TestCase
 
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
+
+    /** @test */
+    public function it_can_get_a_user()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->get("/api/users/{$user->id}");
+
+        $response
+            ->assertStatus(200)
+            ->assertJson($user->toArray());
+    }
+
+    /** @test */
+    public function it_returns_an_error_if_user_not_found()
+    {
+        $response = $this->get('/api/users/999');
+
+        $response->assertStatus(404)
+            ->assertJson(['error' => 'User not found']);
+    }
 }
