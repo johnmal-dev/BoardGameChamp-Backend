@@ -18,15 +18,15 @@ class GameSessionControllerTest extends TestCase
         $gameSessions = GameSession::factory()
             ->count(3)
             ->sequence(
-                ['game_session_date' => now()->subDay(2)->toDateTimeString()],
-                ['game_session_date' => now()->subDay(1)->toDateTimeString()],
+                ['game_session_date' => now()->subDays(1)->toDateTimeString()],
+                ['game_session_date' => now()->subDays(2)->toDateTimeString()],
                 ['game_session_date' => now()->toDateTimeString()]
             )
             ->create();
 
         $response = $this->get('/api/game-sessions');
         $expectedData = $gameSessions
-            ->sortBy('game_session_date', null, true)
+            ->sortByDesc('game_session_date')
             ->values()
             ->toArray();
 
@@ -147,13 +147,13 @@ class GameSessionControllerTest extends TestCase
     /** @test */
     public function it_can_store_new_game_session_and_session_players_with_new_game_session_endpoint()
     {
-        $gamePlayed = Game::factory()->create();
+        $game = Game::factory()->create();
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();
         $user3 = User::factory()->create();
 
         $incomingData = [
-            'game_id' => $gamePlayed->id,
+            'game_id' => $game->id,
             'game_session_date' => now()->toDateString(),
             'session_players' => [
                 [
