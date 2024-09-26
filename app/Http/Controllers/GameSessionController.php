@@ -12,7 +12,19 @@ class GameSessionController extends Controller
 {
     public function index(): JsonResponse
     {
-        $gameSessions = GameSession::query()->with('sessionPlayers')->orderBy('game_session_date', 'desc')->get();
+        $gameSessions = GameSession::query()
+            ->with([
+                'sessionPlayers' => function ($query) {
+                    $query
+                        ->with('user:id,username')
+                        ->get()
+                        ->makeHidden(['game_id', 'game_session_id', 'created_at', 'updated_at']);
+                },
+                'game:id,game_name'
+            ])
+            ->orderBy('game_session_date', 'desc')
+            ->get()
+            ->makeHidden(['game_id', 'created_at', 'updated_at']);
         return response()->json($gameSessions);
     }
 
